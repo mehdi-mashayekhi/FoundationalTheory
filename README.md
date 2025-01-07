@@ -26,13 +26,13 @@ This repository also includes the Solidity code used for registering and managin
 
 ### **Contract Address**
 - Deployed on the Binance Smart Chain at:  
-  [0x41e6430f2023317a4e765a1ed79f71cdff89c562](https://bscscan.com/address/0x41e6430f2023317a4e765a1ed79f71cdff89c562)
+  [0xf1a9709186c11f2de4eb9577307fa1c9c90294fc](https://bscscan.com/address/0xf1a9709186c11f2de4eb9577307fa1c9c90294fc)
 
 ---
 
 ## **IPFS Link to Articles**
 The digital version of the foundational theories can be accessed on IPFS:  
-[https://ipfs.io/ipfs/bafybeidzxmxzgelvnlaeaag3x4y24ohcjvkwjbh6spdzlkm2q7onftsyka](https://ipfs.io/ipfs/bafybeidzxmxzgelvnlaeaag3x4y24ohcjvkwjbh6spdzlkm2q7onftsyka)
+[https://ipfs.io/ipfs/bafybeiaso5gsfypl5wj5byl4dx3fbqyh5v7zkyev5iqp66aykwnsgqdafa](https://ipfs.io/ipfs/bafybeiaso5gsfypl5wj5byl4dx3fbqyh5v7zkyev5iqp66aykwnsgqdafa)
 
 ---
 
@@ -52,18 +52,28 @@ contract ArticleRegistry {
         string title; // Title of the article
         string authorName; // Name of the author
         string cid; // IPFS CID for the PDF
+        string website; // Website link for the article
+        string github; // GitHub repository link
         address author; // Address of the author
     }
 
     Article public article;
 
     // Constructor to initialize the contract with article details
-    constructor(string memory _title, string memory _cid, string memory _authorName) {
+    constructor(
+        string memory _title,
+        string memory _cid,
+        string memory _authorName,
+        string memory _website,
+        string memory _github
+    ) {
         article.title = _title;
         article.cid = _cid;
         article.author = msg.sender;
         article.timestamp = block.timestamp;
         article.authorName = _authorName;
+        article.website = _website;
+        article.github = _github;
     }
 
     // Function to update the CID (only the author can call this)
@@ -72,8 +82,36 @@ contract ArticleRegistry {
         article.cid = _cid;
     }
 
+    // Function to update the website and GitHub links (only the author can call this)
+    function updateLinks(string memory _website, string memory _github) public {
+        require(msg.sender == article.author, "Only the author can update the links");
+        article.website = _website;
+        article.github = _github;
+    }
+
     // Function to retrieve article details
-    function getArticle() public view returns (string memory, string memory, string memory, address, uint256) {
-        return (article.title, article.cid, article.authorName, article.author, article.timestamp);
+    function getArticle()
+        public
+        view
+        returns (
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            address,
+            uint256
+        )
+    {
+        return (
+            article.title,
+            article.cid,
+            article.authorName,
+            article.website,
+            article.github,
+            article.author,
+            article.timestamp
+        );
     }
 }
+
